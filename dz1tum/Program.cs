@@ -1,174 +1,97 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
+﻿using dz1tum.classes;
+using dz1tum.enums;
+using System;
+using static dz1tum.classes.Bankacc;
 class Program
 {
-    static void Ex1(string filePath)
+    static void Ex1()
     {
-        if (!File.Exists(filePath))
+
+        Console.WriteLine("Введите начальный баланс: ");
+        string inputBalance = Console.ReadLine();
+        decimal startBalance = Convert.ToDecimal(inputBalance);
+
+        Console.WriteLine("Выберите тип банковского счета:\n1 - Current (Текущий)\n2 - Savings (Сберегательный)\n3 - Deposit (Депозитный)");
+        Console.Write("Введите цифру от 1 до 3: ");
+        string userChoice = Console.ReadLine();
+        AccountType selectedType = AccountType.Current;
+        if (userChoice == "1")
         {
-            Console.WriteLine($"Ошибка: Файл по пути '{filePath}' не найден.");
+            selectedType = AccountType.Current;
+        }
+        else if (userChoice == "2")
+        {
+            selectedType = AccountType.Savings;
+        }
+        else if (userChoice == "3")
+        {
+            selectedType = AccountType.Deposit;
+        }
+        else
+        {
+            Console.WriteLine("Неверный ввод. По умолчанию выбран счет: Current");
+        }
+        BankAccount ExampleAccount = new BankAccount(startBalance, selectedType);
+
+        Console.WriteLine("\nСчет успешно создан:");
+        ExampleAccount.PrintInfo();
+
+        Console.Write("\nВведите сумму для снятия: ");
+        string inputWithdraw = Console.ReadLine();
+        decimal withdrawAmount = Convert.ToDecimal(inputWithdraw);
+        ExampleAccount.IsWithdrawable(withdrawAmount);
+
+        Console.Write("\nВведите сумму для пополнения: ");
+        string inputDeposit = Console.ReadLine();
+        decimal depositAmount = Convert.ToDecimal(inputDeposit);
+        ExampleAccount.IsReplenishable(depositAmount);
+
+        Console.WriteLine("\nИтоговое состояние счета:");
+        ExampleAccount.PrintInfo();
+    }
+    static void Hw1()
+    {
+        Console.Write("Введите высоту здания (в метрах): ");
+        if (!double.TryParse(Console.ReadLine(), out double height) || height <= 0)
+        {
+            Console.WriteLine("Ошибка: высота должна быть положительным числом.");
+            Console.ReadLine();
             return;
         }
 
-        try
+        Console.Write("Введите количество этажей: ");
+        if (!int.TryParse(Console.ReadLine(), out int floors) || floors <= 0)
         {
-            string fileContent = File.ReadAllText(filePath);
-            List<char> charList = new List<char>(fileContent.ToCharArray());
-            string vowelsPattern = "аеёиоуыэюяАЕЁИОУЫЭЮЯaeiouyAEIOUY";
-            string consonantsPattern = "бвгджзйклмнпрстфхцчшщБВГДЖЗЙКЛМНПРСТФХЦЧШЩbcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ";
-            int vowelsCount = 0;
-            int consonantsCount = 0;
-
-            foreach (char c in charList)
-            {
-                if (vowelsPattern.Contains(c))
-                {
-                    vowelsCount++;
-                }
-                else if (consonantsPattern.Contains(c))
-                {
-                    consonantsCount++;
-                }
-            }
-            Console.WriteLine($"Количество гласных букв: {vowelsCount}");
-            Console.WriteLine($"Количество согласных букв: {consonantsCount}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Произошла ошибка при обработке файла: {ex.Message}");
-        }
-    }
-
-    static void Ex2()
-    {
-        LinkedList<LinkedList<int>> matrixA = new LinkedList<LinkedList<int>>();
-        matrixA.AddLast(new LinkedList<int>(new[] { 1, 2, 3 }));
-        matrixA.AddLast(new LinkedList<int>(new[] { 4, 5, 6 }));
-
-        LinkedList<LinkedList<int>> matrixB = new LinkedList<LinkedList<int>>();
-        matrixB.AddLast(new LinkedList<int>(new[] { 7, 8 }));
-        matrixB.AddLast(new LinkedList<int>(new[] { 9, 1 }));
-        matrixB.AddLast(new LinkedList<int>(new[] { 2, 3 }));
-
-        Console.WriteLine("Матрица A:");
-        foreach (var row in matrixA)
-        {
-            foreach (var element in row)
-            {
-                Console.Write($"{element}\t");
-            }
-            Console.WriteLine();
-        }
-
-        Console.WriteLine("\nМатрица B:");
-        foreach (var row in matrixB)
-        {
-            foreach (var element in row)
-            {
-                Console.Write($"{element}\t");
-            }
-            Console.WriteLine();
-        }
-
-        int rowsA = matrixA.Count;
-        int colsA = matrixA.First.Value.Count;
-        int rowsB = matrixB.Count;
-        int colsB = matrixB.First.Value.Count;
-
-        if (colsA != rowsB)
-        {
-            Console.WriteLine("\nОшибка: Количество столбцов матрицы A должно совпадать с количеством строк матрицы B.");
+            Console.WriteLine("Ошибка: количество этажей должно быть целым числом больше нуля.");
+            Console.ReadLine();
             return;
         }
-        var listA = new List<List<int>>();
-        foreach (var row in matrixA)
+
+        Console.Write("Введите количество квартир: ");
+        if (!int.TryParse(Console.ReadLine(), out int apartments) || apartments <= 0)
         {
-            listA.Add(new List<int>(row));
+            Console.WriteLine("Ошибка: количество квартир должно быть больше нуля.");
+            Console.ReadLine();
+            return;
         }
 
-        var listB = new List<List<int>>();
-        foreach (var row in matrixB)
+        Console.Write("Введите количество подъездов: ");
+        if (!int.TryParse(Console.ReadLine(), out int entrances) || entrances <= 0)
         {
-            listB.Add(new List<int>(row));
+            Console.WriteLine("Ошибка: количество подъездов должно быть больше нуля.");
+            Console.ReadLine();
+            return;
         }
-        LinkedList<LinkedList<int>> resultMatrix = new LinkedList<LinkedList<int>>();
-
-        for (int i = 0; i < rowsA; i++)
-        {
-            LinkedList<int> row = new LinkedList<int>();
-            for (int j = 0; j < colsB; j++)
-            {
-                int sum = 0;
-                for (int k = 0; k < colsA; k++)
-                {
-                    sum += listA[i][k] * listB[k][j];
-                }
-                row.AddLast(sum);
-            }
-            resultMatrix.AddLast(row);
-        }
-        Console.WriteLine("\nРезультат умножения (Матрица A * Матрица B):");
-        foreach (var row in resultMatrix)
-        {
-            foreach (var element in row)
-            {
-                Console.Write($"{element}\t");
-            }
-            Console.WriteLine();
-        }
+        Building building = new Building(height, floors, apartments, entrances);
+        building.PrintInfo();
     }
-    static void Ex3()
+
+static void Main(string[] args)
     {
-        string[] monthNames = {
-            "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-        };
-        Dictionary<string, int[]> temperatureData = new Dictionary<string, int[]>();
-        Random rand = new Random();
-
-        foreach (string month in monthNames)
-        {
-            int[] dailyTemperatures = new int[30];
-            for (int day = 0; day < 30; day++)
-            {
-                dailyTemperatures[day] = rand.Next(-20, 31); 
-            }
-            temperatureData.Add(month, dailyTemperatures);
-        }
-
-        Dictionary<string, double> averageTemperatures = new Dictionary<string, double>();
-        foreach (var kvp in temperatureData)
-        {
-            double sum = kvp.Value.Sum();
-            double average = sum / 30.0;
-            averageTemperatures.Add(kvp.Key, average);
-            
-        }
-        var sortedAverages = averageTemperatures.OrderBy(pair => pair.Value);
-        Console.WriteLine("\nОтсортированные средние температуры по возрастанию:");
-        foreach (var kvp in sortedAverages)
-        {
-            Console.WriteLine($"{kvp.Key}: {kvp.Value:F2}°C");
-        }
-    }
-    static void Main(string[] args)
-    {
-        Console.WriteLine("Упражнение+Домашнее задание 6.1");
-        Ex1("..\\..\\file\\file1.txt");
-        Console.ReadKey();
-        Console.WriteLine("Упражнение+Домашнее задание 6.2");
-        Ex2();
-        Console.ReadKey();
-        Console.WriteLine("Упражнение+Домашнее задание 6.3");
-        Ex3();
-        Console.ReadKey();
-
-
-
-
-
+        Console.WriteLine("Задания 7.1-7.3");
+        Ex1();
+        Console.ReadLine();
+        Hw1();
+        Console.ReadLine();
     }
 }
